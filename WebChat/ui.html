@@ -1,0 +1,78 @@
+<html>
+    <head>
+        <style>
+                    body{
+                        background-color: rgba(0, 255, 0, 255);
+                    }
+                    .main{
+                        overflow: hidden;
+                        height: 100%;
+                        width: 800px;
+                        background-color: rgba(0, 0, 0, 0);
+                    }
+                    .list{
+                        list-style-type: none;
+                    }
+                    .element{
+                        margin-bottom: 20px;
+                        color: white;
+                        border-radius: 10px;
+                        width: 400px;
+                        height: 105px;
+                        background-color: rgba(37, 41, 46, 0.6);
+                    }
+                    .user{
+                        position: absolute;
+                        margin-top: 10px;
+                        margin-left: 10px;
+                        font-family: arial;
+                        font-size: 26px;
+                        text-shadow: -1px -1px 0#000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+                        color: rgb(44, 195, 201);
+                    }
+                    .comment{
+                        position: absolute;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        margin-left: 10px;
+                        margin-top: 40px;
+                        width: 390px;
+                        height: 60px;
+                        font-family: arial;
+                        font-size: 26px;
+                        text-shadow: -1px -1px 0#000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+                    }
+        </style>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="app.js">
+        // setInterval(time, 10000);
+        // var socket = new WebSocket("ws://127.0.0.1:22199/");
+        // socket.onopen = function (event) {};
+        // socket.onmessage = function (e) {
+        //     if($(".list li").length >= 4){
+        //         $('.list li').eq(0).fadeOut('slow', function(){
+        //             $('.list li').eq(0).remove();
+        //         });
+        //     }
+        //     var msg = e.data.split(",");
+        //     $(".main ul").append(`<li class="element"><div class="user">${msg[0]}</div><h1 class="comment">${msg[1]}</h1></li>`);
+        // };
+
+        // function time(){
+        //     if($(".list li").length >= 1){
+        //         $('.list li').eq(0).fadeOut('slow', function(){
+        //             $('.list li').eq(0).remove();
+        //         });
+        //     }
+        // }
+        </script>
+    </head>
+
+    <body>
+        <nav class="main">
+            <ul class="list">
+                
+            </ul>
+        </nav>
+    </body>    
+</html>
