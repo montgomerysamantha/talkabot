@@ -15,12 +15,12 @@ namespace Twitch
         public string oauth;
         public string channel;
 
-        public List<Command> commandList;
+        public List<Command> commandList = new List<Command>();
     }
 
-    public class ConfigManager
+    public static class ConfigManager
     {
-        public void SaveConfig(List<Command> commandList, string username, string oauth, string channel)
+        public static void SaveConfig(List<Command> commandList, string username, string oauth, string channel)
         {
             using(FileStream fs = new FileStream("Config.xml", FileMode.Create, FileAccess.Write))
             {
@@ -37,7 +37,7 @@ namespace Twitch
             }
         }
 
-        public ConfigObject LoadConfig()
+        public static ConfigObject LoadConfig()
         {
             ConfigObject obj = new ConfigObject();
 
