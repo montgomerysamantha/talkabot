@@ -20,9 +20,11 @@ namespace Twitch
 
     public static class ConfigManager
     {
+        private static string configFileName = "Config.xml";
+
         public static void SaveConfig(List<Command> commandList, string username, string oauth, string channel)
         {
-            using(FileStream fs = new FileStream("Config.xml", FileMode.Create, FileAccess.Write))
+            using(FileStream fs = new FileStream(configFileName, FileMode.Create, FileAccess.Write))
             {
                 XmlSerializer xs = new XmlSerializer(typeof(ConfigObject));
 
@@ -37,29 +39,51 @@ namespace Twitch
             }
         }
 
-        public static ConfigObject LoadConfig()
+        /// <summary>
+        /// In charge of deserializing the config file into a ConfigObject class
+        /// </summary>
+        /// <param name="fs">The FileStream handle of the config file to be deserialized</param>
+        /// <returns>The ConfigObject is returned if everything went well. Otherwise, null will be returned to signal an invalid file</returns>
+        private static ConfigObject DeserializeConfig(FileStream fs)
         {
-            ConfigObject obj = new ConfigObject();
+            XmlSerializer xs = new XmlSerializer(typeof(ConfigObject));
 
             try
             {
-                using (FileStream fs = new FileStream("Config.xml", FileMode.Open, FileAccess.Read))
+                ConfigObject configObj = (ConfigObject)xs.Deserialize(fs);
+                foreach (Command cmd in configObj.commandList)
                 {
-                    XmlSerializer xs = new XmlSerializer(typeof(ConfigObject));
+                    cmd.cooldown = new TimeSpan(cmd.ticks);
+                }
 
-                    obj = (ConfigObject)xs.Deserialize(fs);
-                    foreach(Command cmd in obj.commandList)
+                return configObj;
+            }
+            catch (InvalidOperationException)
+            {
+                return null;
+            }
+        }
+
+        public static ConfigObject LoadConfig()
+        {
+            try
+            {
+                using (FileStream fs = new FileStream(configFileName, FileMode.Open, FileAccess.Read))
+                {
+                    var configObject = DeserializeConfig(fs);
+                    if(configObject == null)
                     {
-                        cmd.cooldown = new TimeSpan(cmd.ticks);
+                        File.Delete(configFileName);
+                        return new ConfigObject();
                     }
+
+                    return configObject;
                 }
             }
-            catch(FileNotFoundException e)
+            catch(FileNotFoundException)
             {
-                
+                return new ConfigObject();
             }
-
-            return obj;
         }
     }
 }
