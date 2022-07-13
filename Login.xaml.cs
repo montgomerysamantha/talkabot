@@ -27,7 +27,6 @@ namespace Twitch
         TwitchIRC twitch;
         TalkaBot talk = null;
         ConfigObject Cache = null;
-        ConfigManager smg = new ConfigManager();
         public Login()
         {
             InitializeComponent();
@@ -36,7 +35,7 @@ namespace Twitch
 
             if (File.Exists("Config.xml"))
             {
-                Cache = smg.LoadConfig();
+                Cache = ConfigManager.LoadConfig();
 
                 UsernameTextBox.Text = Cache.username;
                 tokenTextBox.Password = Cache.oauth;
@@ -112,7 +111,7 @@ namespace Twitch
                     talk.Show();
                     this.Hide();
                     List<Command> commands = new List<Command>();
-                    smg.SaveConfig(commands, username, token, channel);
+                    ConfigManager.SaveConfig(commands, username, token, channel);
                 }
             }
             else
