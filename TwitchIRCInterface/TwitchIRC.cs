@@ -455,7 +455,6 @@ namespace Twitch
 
         public void SaveConfigRequest()
         {
-            ConfigManager config = new ConfigManager();
             //config.SaveConfig(commandsList, username, oauth, channel);
             return;
         }
