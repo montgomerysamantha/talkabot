@@ -24,7 +24,6 @@ namespace Twitch
     {
         Login parent;
         WebChat chat = new WebChat();
-        ConfigManager config = new ConfigManager();
         private int lines = 0;
         //private Dictionary<Command, Canvas> visibleCommands;
         private Grid lastPanel = null;
@@ -72,7 +71,7 @@ namespace Twitch
         /// </summary>
         private void LoadCommands()
         {
-            ConfigObject obj = config.LoadConfig();
+            ConfigObject obj = ConfigManager.LoadConfig();
 
             DateTime date = new DateTime(1979, 07, 28, 22, 35, 5); // the default date
 
@@ -91,7 +90,7 @@ namespace Twitch
 
             }
 
-            config.SaveConfig(obj.commandList, obj.username, obj.oauth, obj.channel);
+            ConfigManager.SaveConfig(obj.commandList, obj.username, obj.oauth, obj.channel);
         }
 
         /// <summary>
@@ -181,13 +180,13 @@ namespace Twitch
         /// </summary>
         private void SaveCommands() 
         {
-            ConfigObject obj = config.LoadConfig();
+            ConfigObject obj = ConfigManager.LoadConfig();
             List<Command> commands = new List<Command>();
             foreach (KeyValuePair<string, Command> i in connection.commandsList)
             {
                 commands.Add(i.Value);
             }
-            config.SaveConfig(commands, obj.username, obj.oauth, obj.channel);
+            ConfigManager.SaveConfig(commands, obj.username, obj.oauth, obj.channel);
         }
 
         /// <summary>

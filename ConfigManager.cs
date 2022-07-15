@@ -15,14 +15,16 @@ namespace Twitch
         public string oauth;
         public string channel;
 
-        public List<Command> commandList;
+        public List<Command> commandList = new List<Command>();
     }
 
-    public class ConfigManager
+    public static class ConfigManager
     {
-        public void SaveConfig(List<Command> commandList, string username, string oauth, string channel)
+        private static string configFileName = "Config.xml";
+
+        public static void SaveConfig(List<Command> commandList, string username, string oauth, string channel)
         {
-            using(FileStream fs = new FileStream("Config.xml", FileMode.Create, FileAccess.Write))
+            using(FileStream fs = new FileStream(configFileName, FileMode.Create, FileAccess.Write))
             {
                 XmlSerializer xs = new XmlSerializer(typeof(ConfigObject));
 
@@ -37,29 +39,60 @@ namespace Twitch
             }
         }
 
-        public ConfigObject LoadConfig()
+        /// <summary>
+        /// In charge of deserializing the config file and handling exception for this task
+        /// </summary>
+        /// <param name="fs">The FileStream handle which points to the file to be processed as the config file</param>
+        /// <returns>If the task is a success, ConfigObject will be returned. Otherwise, null will be returned to signal an error</returns>
+        private static ConfigObject DeserializeConfigFile(FileStream fs)
         {
-            ConfigObject obj = new ConfigObject();
-
             try
             {
-                using (FileStream fs = new FileStream("Config.xml", FileMode.Open, FileAccess.Read))
-                {
-                    XmlSerializer xs = new XmlSerializer(typeof(ConfigObject));
+                XmlSerializer xs = new XmlSerializer(typeof(ConfigObject));
 
-                    obj = (ConfigObject)xs.Deserialize(fs);
-                    foreach(Command cmd in obj.commandList)
+                ConfigObject configObj = (ConfigObject)xs.Deserialize(fs);
+                foreach (Command cmd in configObj.commandList)
+                {
+                    cmd.cooldown = new TimeSpan(cmd.ticks);
+                }
+
+                return configObj;
+            }
+            catch (InvalidOperationException)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Handles the loading of the config file which saves the username and oauth token
+        /// </summary>
+        /// <returns>ConfigObject</returns>
+        public static ConfigObject LoadConfig()
+        {
+            try
+            {
+                using (FileStream fs = new FileStream(configFileName, FileMode.Open, FileAccess.Read))
+                {
+                    // Deserialize and check if it failed. If it did, just delete the old file since it's invalid
+                    var configObject = DeserializeConfigFile(fs);
+                    if(configObject == null)
                     {
-                        cmd.cooldown = new TimeSpan(cmd.ticks);
+                        // Close the handle before deleting it to gain access
+                        fs.Close();
+                        File.Delete(configFileName);
+
+                        // Just return a new object to start a brand new session
+                        return new ConfigObject();
                     }
+
+                    return configObject;
                 }
             }
-            catch(FileNotFoundException e)
+            catch(FileNotFoundException)
             {
-                
+                return new ConfigObject();
             }
-
-            return obj;
         }
     }
 }
